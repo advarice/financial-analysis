@@ -1,0 +1,15 @@
+/*.eighty-width{
+  !*
+  background-color: #61dafb;
+  *!
+  width: 90%
+}*/
+.container{
+  background-color: #61dafb;
+  width:100% !important;
+}
+
+.earning-card{
+  width:100%;
+  max-width:100%;
+}
