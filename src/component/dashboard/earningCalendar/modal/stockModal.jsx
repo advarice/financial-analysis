@@ -83,7 +83,134 @@ class StockModal extends Component{
     };
 
     handleShow = () =>{
-        this.setState({show:true});
+        const data = axios.get('http://localhost:5000/summary/stock?stockSymbol=BABA')
+            .then(response => {
+
+                var keys = Object.keys(response.data);
+                this.setState({stockSummary: response.data.candleData})
+
+
+                var ohlc = [];
+                var volume = [];
+
+                console.log(this.state);
+                var groupingUnits = [[
+                    'week',                         // unit name
+                    [1]                             // allowed multiples
+                ], [
+                    'month',
+                    [1, 2, 3, 4, 6]
+                ]];
+
+                for (var i = 0; i < this.state.stockSummary.length; i++) {
+                    ohlc.push(
+                        [
+                            this.state.stockSummary[i].date,
+                            this.state.stockSummary[i].candle.open,
+                            this.state.stockSummary[i].candle.high,
+                            this.state.stockSummary[i].candle.low,
+                            this.state.stockSummary[i].candle.close
+                        ]
+                    );
+                    volume.push([
+                        this.state.stockSummary[i].date,
+                        this.state.stockSummary[i].candle.volume
+                    ]);
+                }
+
+                const options: Highcharts.Options = {
+                    rangeSelector: {
+                        selected: 2
+                    },
+
+                    title: {
+                        text: 'BABA Historical'
+                    },
+
+                    subtitle: {
+                        text: 'With SMA and Volume by Price technical indicators'
+                    },
+
+                    yAxis: [{
+                        startOnTick: false,
+                        endOnTick: false,
+                        labels: {
+                            align: 'right',
+                            x: -3
+                        },
+                        title: {
+                            text: 'OHLC'
+                        },
+                        height: '60%',
+                        lineWidth: 2,
+                        resize: {
+                            enabled: true
+                        }
+                    }, {
+                        labels: {
+                            align: 'right',
+                            x: -3
+                        },
+                        title: {
+                            text: 'Volume'
+                        },
+                        top: '65%',
+                        height: '35%',
+                        offset: 0,
+                        lineWidth: 2
+                    }],
+
+                    tooltip: {
+                        split: true
+                    },
+
+                    plotOptions: {
+                        series: {
+                            dataGrouping: {
+                                units: groupingUnits
+                            }
+                        }
+                    },
+
+                    series: [{
+                        type: 'candlestick',
+                        name: 'AAPL',
+                        id: 'aapl',
+                        zIndex: 2,
+                        data: ohlc
+                    }, {
+                        type: 'column',
+                        name: 'Volume',
+                        id: 'volume',
+                        data: volume,
+                        yAxis: 1
+                    }, {
+                        type: 'vbp',
+                        linkedTo: 'aapl',
+                        params: {
+                            volumeSeriesID: 'volume'
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        zoneLines: {
+                            enabled: false
+                        }
+                    }, {
+                        type: 'sma',
+                        linkedTo: 'aapl',
+                        zIndex: 1,
+                        marker: {
+                            enabled: false
+                        }
+                    }]
+                };
+
+                this.setState({options: options})
+                this.render();
+                this.setState({show:true});
+
+            })
     };
 
 
