@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "ag-grid-community": "^22.1.1",
     "ag-grid-react": "^22.1.1",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "highcharts": "^8.0.0",
     "highcharts-react-official": "^2.2.2",
